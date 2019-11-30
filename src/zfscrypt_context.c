@@ -116,7 +116,7 @@ zfscrypt_err_t zfscrypt_context_drop_privs(zfscrypt_context_t* self) {
 
 zfscrypt_err_t zfscrypt_context_regain_privs(zfscrypt_context_t* self) {
     const int status = pam_modutil_regain_priv(self->pam, &self->privs);
-    const zfscrypt_err_t err = status == 0
+    const zfscrypt_err_t err = (status == 0)
         ? zfscrypt_err_pam(status, "Regained privileges")
         : zfscrypt_err_pam(status, "Could not regain privileges");
     zfscrypt_context_log_err(self, err);
