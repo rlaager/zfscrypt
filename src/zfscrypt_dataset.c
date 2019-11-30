@@ -6,7 +6,7 @@
 
 #include "zfscrypt_utils.h"
 
-// Note regarding error handling with libzfs: Normaly functions return directly an erro code, but zfs_(un)mount returns just -1 on error
+// Note regarding error handling with libzfs: Normally functions return directly an errno code, but zfs_(un)mount returns just -1 on error
 
 // public functions
 
