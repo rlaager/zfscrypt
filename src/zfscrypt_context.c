@@ -82,9 +82,6 @@ zfscrypt_err_t zfscrypt_context_persist_token(zfscrypt_context_t* self) {
 
 zfscrypt_err_t zfscrypt_context_restore_token(zfscrypt_context_t* self, const char** token) {
     zfscrypt_err_t err = zfscrypt_context_pam_data_get_token(self, token);
-    // if (err.value)
-    //     // FIXME systemd-user:session always triggers PAM_AUTHTOK_ERR here
-    //     err = zfscrypt_context_pam_ask_token(self, token);
     zfscrypt_context_log_err(self, err);
     return err;
 }
