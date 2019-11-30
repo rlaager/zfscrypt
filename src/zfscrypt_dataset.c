@@ -186,14 +186,25 @@ bool zfscrypt_dataset_has_passphrase(zfscrypt_dataset_t* self) {
 }
 
 bool zfscrypt_dataset_valid(zfscrypt_dataset_t* self) {
-    return zfscrypt_dataset_has_matching_user(self) && zfscrypt_dataset_has_mountpoint(self) && zfscrypt_dataset_can_mount(self) && zfscrypt_dataset_is_encrypted(self) && zfscrypt_dataset_does_prompt(self) && zfscrypt_dataset_has_passphrase(self);
+    return
+        zfscrypt_dataset_has_matching_user(self) &&
+        zfscrypt_dataset_has_mountpoint(self) &&
+        zfscrypt_dataset_can_mount(self) &&
+        zfscrypt_dataset_is_encrypted(self) &&
+        zfscrypt_dataset_does_prompt(self) &&
+        zfscrypt_dataset_has_passphrase(self);
 }
 
 // private methods, iteration
 
 int zfscrypt_dataset_filesystem_visitor(zfs_handle_t* handle, void* data) {
     zfscrypt_dataset_iter_t* iter = data;
-    zfscrypt_dataset_t dataset = {.context = iter->context, .handle = handle, .key = iter->key, .new_key = iter->new_key};
+    zfscrypt_dataset_t dataset = {
+        .context = iter->context,
+        .handle = handle,
+        .key = iter->key,
+        .new_key = iter->new_key
+    };
     if (zfscrypt_dataset_valid(&dataset)) {
         const zfscrypt_err_t err = iter->callback(&dataset);
         zfscrypt_context_log_err(iter->context, err);
@@ -206,7 +217,12 @@ int zfscrypt_dataset_root_visitor(zfs_handle_t* handle, void* data) {
 }
 
 zfscrypt_err_t zfscrypt_dataset_iter(zfscrypt_context_t* context, const char* key, const char* new_key, zfscrypt_dataset_iter_f callback) {
-    zfscrypt_dataset_iter_t iter = {.context = context, .callback = callback, .key = key, .new_key = new_key};
+    zfscrypt_dataset_iter_t iter = {
+        .context = context,
+        .callback = callback,
+        .key = key,
+        .new_key = new_key
+    };
     const int err = zfs_iter_root(context->libzfs, zfscrypt_dataset_root_visitor, &iter);
     return zfscrypt_err_zfs(err, "Iterated over all datasets");
 }
