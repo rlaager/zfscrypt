@@ -57,7 +57,8 @@ int zfscrypt_err_for_pam(zfscrypt_err_t err) {
         return PAM_SYSTEM_ERR;
     case ZFSCRYPT_ERR_PAM:
         return err.value;
+    default:
+        // unreachable
+        return PAM_SYSTEM_ERR;
     }
-    // unreachable
-    return PAM_SYSTEM_ERR;
 }
