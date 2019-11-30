@@ -66,6 +66,7 @@ The encryption key and the login password must be the same, otherwise automatic 
 zfs create -o mountpoint=/home tank/home
 zfs create -o io.github.benkerry:zfscrypt_user=ben -o encryption=on -o keyformat=passphrase -o keylocation=prompt -o canmount=noauto tank/home/ben
 zfs mount tank/home
+zfs mount tank/home/ben
 useradd --create-home ben
 zfs allow -u ben load-key,change-key,mount tank/home/ben 
 passwd ben
