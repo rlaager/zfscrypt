@@ -58,18 +58,22 @@ extern int pam_sm_open_session(pam_handle_t* handle, int flags, int argc, char c
     zfscrypt_err_t err = zfscrypt_context_begin(&context, handle, flags, argc, argv);
     int counter = 0;
     const char* token = NULL;
-    if (!err.value)
+    if (!err.value) {
         err = zfscrypt_context_log_err(
             &context,
             zfscrypt_session_counter_update(&counter, context.runtime_dir, context.user, +1));
-    if (!err.value && counter == 1)
-        err = zfscrypt_context_drop_privs(&context);
-    if (!err.value && counter == 1)
-        err = zfscrypt_context_restore_token(&context, &token);
-    if (!err.value && counter == 1)
-        err = zfscrypt_dataset_unlock_all(&context, token);
-    if (context.privs.is_dropped)
-        (void) zfscrypt_context_regain_privs(&context);
+    }
+    if (counter == 1) {
+        /* This is the first session for the user. Unlock and mount the filesystems. */
+        if (!err.value)
+            err = zfscrypt_context_drop_privs(&context);
+        if (!err.value)
+            err = zfscrypt_context_restore_token(&context, &token);
+        if (!err.value)
+            err = zfscrypt_dataset_unlock_all(&context, token);
+        if (context.privs.is_dropped)
+            (void) zfscrypt_context_regain_privs(&context);
+    }
     (void) zfscrypt_context_clear_token(&context);
     return zfscrypt_context_end(&context, err);
 }
@@ -83,17 +87,21 @@ extern int pam_sm_close_session(pam_handle_t* handle, int flags, int argc, char 
     zfscrypt_context_t context;
     zfscrypt_err_t err = zfscrypt_context_begin(&context, handle, flags, argc, argv);
     int counter = 0;
-    if (!err.value)
+    if (!err.value) {
         err = zfscrypt_context_log_err(
             &context,
             zfscrypt_session_counter_update(&counter, context.runtime_dir, context.user, -1));
-    if (!err.value && counter == 0)
-        err = zfscrypt_context_drop_privs(&context);
-    if (!err.value && counter == 0)
-        err = zfscrypt_dataset_lock_all(&context);
-    if (context.privs.is_dropped)
-        (void) zfscrypt_context_regain_privs(&context);
-    (void) drop_filesystem_cache();
+    }
+    if (counter == 0) {
+	/* The last session has been closed. Unmount and lock the filesystems. */
+        if (!err.value)
+            err = zfscrypt_context_drop_privs(&context);
+        if (!err.value)
+            err = zfscrypt_dataset_lock_all(&context);
+        if (context.privs.is_dropped)
+            (void) zfscrypt_context_regain_privs(&context);
+        (void) drop_filesystem_cache();
+    }
     return zfscrypt_context_end(&context, err);
 }
 
