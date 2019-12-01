@@ -64,7 +64,7 @@ extern int pam_sm_open_session(pam_handle_t* handle, int flags, int argc, char c
             zfscrypt_session_counter_update(&counter, context.runtime_dir, context.user, +1));
     }
     if (counter == 1) {
-        /* This is the first session for the user. Unlock and mount the filesystems. */
+        // This is the first session for the user. Unlock and mount the filesystems.
         if (!err.value)
             err = zfscrypt_context_drop_privs(&context);
         if (!err.value)
