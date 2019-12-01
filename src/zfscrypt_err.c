@@ -52,13 +52,13 @@ int zfscrypt_err_for_pam(zfscrypt_err_t err) {
     if (err.value == 0)
         return PAM_SUCCESS;
     switch (err.type) {
-    case ZFSCRYPT_ERR_OS:
-    case ZFSCRYPT_ERR_ZFS:
-        return PAM_SYSTEM_ERR;
-    case ZFSCRYPT_ERR_PAM:
-        return err.value;
-    default:
-        // unreachable
-        return PAM_SYSTEM_ERR;
+        case ZFSCRYPT_ERR_OS:
+        case ZFSCRYPT_ERR_ZFS:
+            return PAM_SYSTEM_ERR;
+        case ZFSCRYPT_ERR_PAM:
+            return err.value;
+        default:
+            // unreachable
+            return PAM_SYSTEM_ERR;
     }
 }
