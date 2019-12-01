@@ -93,7 +93,7 @@ extern int pam_sm_close_session(pam_handle_t* handle, int flags, int argc, char 
             zfscrypt_session_counter_update(&counter, context.runtime_dir, context.user, -1));
     }
     if (counter == 0) {
-	/* The last session has been closed. Unmount and lock the filesystems. */
+	// The last session has been closed. Unmount and lock the filesystems.
         if (!err.value)
             err = zfscrypt_context_drop_privs(&context);
         if (!err.value)
