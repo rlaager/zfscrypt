@@ -186,8 +186,7 @@ bool zfscrypt_dataset_has_passphrase(zfscrypt_dataset_t* self) {
 }
 
 bool zfscrypt_dataset_valid(zfscrypt_dataset_t* self) {
-    return
-        zfscrypt_dataset_has_matching_user(self) &&
+    return zfscrypt_dataset_has_matching_user(self) &&
         zfscrypt_dataset_has_mountpoint(self) &&
         zfscrypt_dataset_can_mount(self) &&
         zfscrypt_dataset_is_encrypted(self) &&
