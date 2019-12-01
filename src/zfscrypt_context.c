@@ -49,23 +49,24 @@ void zfscrypt_context_log(zfscrypt_context_t* self, const int level, const char*
 }
 
 zfscrypt_err_t zfscrypt_context_log_err(zfscrypt_context_t* self, zfscrypt_err_t err) {
-    const char* domain;
     const int level = err.value == 0 ? LOG_DEBUG : LOG_ERR;
     if (level == LOG_DEBUG && !self->debug) {
         return err;
     }
+    const char* domain = NULL;
     switch (err.type) {
-    case ZFSCRYPT_ERR_OS:
-        domain = "OS";
-        break;
-    case ZFSCRYPT_ERR_PAM:
-        domain = "PAM";
-        break;
-    case ZFSCRYPT_ERR_ZFS:
-        domain = "ZFS";
-        break;
-    default:
-        domain = "UNKNOWN";
+        case ZFSCRYPT_ERR_OS:
+            domain = "OS";
+            break;
+        case ZFSCRYPT_ERR_PAM:
+            domain = "PAM";
+            break;
+        case ZFSCRYPT_ERR_ZFS:
+            domain = "ZFS";
+            break;
+        default:
+            domain = "UNKNOWN";
+            break;
     }
     zfscrypt_context_log(self, level, "%s: %s: %s (%s:%d:%s)", domain, err.message, err.description, err.file, err.line, err.function);
     return err;
